@@ -1137,6 +1137,7 @@ impl<'a, W: Write> Writer<'a, W> {
             }
             // glsl array has the size separated from the base type
             TypeInner::Array { base, .. } => self.write_type(base),
+            TypeInner::BindingArray { base, size } => self.write_type(base),
             ref other => self.write_value_type(other),
         }
     }
@@ -1306,7 +1307,8 @@ impl<'a, W: Write> Writer<'a, W> {
             crate::AddressSpace::Handle => {
                 match self.module.types[global.ty].inner {
                     TypeInner::AccelerationStructure { .. }
-                    | TypeInner::RayQuery { .. } => {
+                    | TypeInner::RayQuery { .. } 
+                    | TypeInner::BindingArray { .. } => {
                         self.write_simple_global(handle, global)?;
                     }
                     _ => unreachable!(),
@@ -1327,6 +1329,10 @@ impl<'a, W: Write> Writer<'a, W> {
         self.write_global_name(handle, global)?;
 
         if let TypeInner::Array { base, size, .. } = self.module.types[global.ty].inner {
+            self.write_array_size(base, size)?;
+        }
+
+        if let TypeInner::BindingArray { base, size, .. } = self.module.types[global.ty].inner {
             self.write_array_size(base, size)?;
         }
 
