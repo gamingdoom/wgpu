@@ -1301,8 +1301,17 @@ impl<'a, W: Write> Writer<'a, W> {
             // A global variable in the `Function` address space is a
             // contradiction in terms.
             crate::AddressSpace::Function => unreachable!(),
+            
             // Textures and samplers are handled directly in `Writer::write`.
-            crate::AddressSpace::Handle => unreachable!(),
+            crate::AddressSpace::Handle => {
+                match self.module.types[global.ty].inner {
+                    TypeInner::AccelerationStructure { ... }
+                    | TypeInner::RayQuery { ... } {
+                        self.write_simple_global(handle, global)?
+                    }
+                    _ => unreachable!(),
+                }
+            },
         }
 
         Ok(())
