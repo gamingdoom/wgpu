@@ -4350,7 +4350,7 @@ impl<'a, W: Write> Writer<'a, W> {
             }
             
             Expression::RayQueryGetIntersection { query, committed } => {
-                write!(self.out, "rayQueryGetIntersectionEXT({}, {})", self.write_expr(query, ctx), committed as u8)?;
+                write!(self.out, "rayQueryGetIntersectionEXT({}, {})", self.write_expr(query, ctx)?, committed as u8)?;
             }
 
             // not supported yet
