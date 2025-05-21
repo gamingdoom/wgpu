@@ -4348,9 +4348,13 @@ impl<'a, W: Write> Writer<'a, W> {
                 self.write_expr(expr, ctx)?;
                 write!(self.out, ".length())")?
             }
+            
+            Expression::RayQueryGetIntersection { query, committed } => {
+                write!(self.out, "rayQueryGetIntersectionEXT({}, {})", self.write_expr(query, ctx), committed as u8)?;
+            }
+
             // not supported yet
-            Expression::RayQueryGetIntersection { .. }
-            | Expression::RayQueryVertexPositions { .. } => unreachable!(),
+            Expression::RayQueryVertexPositions { .. } => unreachable!(),
         }
 
         Ok(())
