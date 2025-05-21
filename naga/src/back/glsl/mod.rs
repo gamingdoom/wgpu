@@ -2635,7 +2635,73 @@ impl<'a, W: Write> Writer<'a, W> {
                 write!(self.out, "{level}")?;
                 self.write_image_atomic(ctx, image, coordinate, array_index, fun, value)?
             }
-            Statement::RayQuery { .. } => unreachable!(),
+            Statement::RayQuery { query, fun } => {
+                write!(self.out, "{level}")?;
+
+                match fun {
+                    crate::RayQueryFunction::Initialize { acceleration_structure, descriptor } => {
+                        write!(self.out, "rayQueryInitializeEXT(")?;
+                        self.write_expr(query, ctx)?;
+                        write!(self.out, ", ")?;
+                        self.write_expr(acceleration_structure, ctx)?;
+                        write!(self.out, ", ")?;
+                        self.write_expr(descriptor, ctx)?;
+                        write!(self.out, ".flags")?;
+
+                        write!(self.out, ", ")?;
+                        self.write_expr(descriptor, ctx)?;
+                        write!(self.out, ".cull_mask")?;
+
+                        write!(self.out, ", ")?;
+                        self.write_expr(descriptor, ctx)?;
+                        write!(self.out, ".origin")?;
+
+                        write!(self.out, ", ")?;
+                        self.write_expr(descriptor, ctx)?;
+                        write!(self.out, ".tmin")?;
+
+                        write!(self.out, ", ")?;
+                        self.write_expr(descriptor, ctx)?;
+                        write!(self.out, ".dir")?;
+
+                        write!(self.out, ", ")?;
+                        self.write_expr(descriptor, ctx)?;
+                        write!(self.out, ".tmax")?;
+
+                        write!(self.out, ");")?;
+                    },
+                    crate::RayQueryFunction::Proceed { result } => {
+                        let res_name = Baked(result).to_string();
+                        let res_ty = ctx.info[result].ty.inner_with(&self.module.types);
+                        self.write_value_type(res_ty)?;
+                        write!(self.out, " {res_name} = ")?;
+                        self.named_expressions.insert(result, res_name);
+
+                        write!(self.out, "rayQueryProceedEXT(")?;
+                        self.write_expr(query, ctx)?;
+                        write!(self.out, ", ")?;
+                        self.write_expr(result, ctx)?;
+                        write!(self.out, ");")?
+                    },
+                    crate::RayQueryFunction::GenerateIntersection { hit_t } => {
+                        write!(self.out, "rayQueryGenerateIntersectionEXT(")?;
+                        self.write_expr(query, ctx)?;
+                        write!(self.out, ", ")?;
+                        self.write_expr(hit_t, ctx)?;
+                        write!(self.out, ");")?
+                    },
+                    crate::RayQueryFunction::ConfirmIntersection {} => {
+                        write!(self.out, "rayQueryConfirmIntersectionEXT(")?;
+                        self.write_expr(query, ctx)?;
+                        write!(self.out, ");")?
+                    },
+                    crate::RayQueryFunction::Terminate {} => {
+                        write!(self.out, "rayQueryTerminateEXT(")?;
+                        self.write_expr(query, ctx)?;
+                        write!(self.out, ");")?
+                    },
+                }
+            }
             Statement::SubgroupBallot { result, predicate } => {
                 write!(self.out, "{level}")?;
                 let res_name = Baked(result).to_string();
