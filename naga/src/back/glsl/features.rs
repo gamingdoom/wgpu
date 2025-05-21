@@ -430,6 +430,9 @@ impl<W> Writer<'_, W> {
                         | ImageClass::Depth { multi: false } => {}
                     }
                 }
+                TypeInner::AccelerationStructure { .. } {
+                    self.features.request(Features::RAY_QUERY);
+                }
                 _ => {}
             }
         }
@@ -560,7 +563,9 @@ impl<W> Writer<'_, W> {
                 Expression::SubgroupOperationResult { .. } => {
                     features.request(Features::SUBGROUP_OPERATIONS)
                 }
-                Expression::RayQueryGetIntersection { .. } => {
+                Expression::RayQueryGetIntersection { .. }
+                | Expression::RayQueryProceedResult { .. } 
+                | Expression::RayQueryVertexPositions { .. } => {
                     features.request(Features::RAY_QUERY)
                 }
                 _ => {}
