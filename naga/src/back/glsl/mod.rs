@@ -929,15 +929,18 @@ impl<'a, W: Write> Writer<'a, W> {
                     // Write all the layout qualifiers
                     if layout_binding.is_some() || storage_format_access.is_some() {
                         write!(self.out, "layout(")?;
-                        if let Some(binding) = layout_binding {
-                            write!(self.out, "binding = {binding}")?;
-                        }
+                        // if let Some(binding) = layout_binding {
+                        //     write!(self.out, "binding = {binding}")?;
+                        // }
+                        write!(self.out, format!("set = {}, binding = {}", global.binding.unwrap().group, global.binding.unwrap().binding))?;
+
                         if let Some((format, _)) = storage_format_access {
                             let format_str = glsl_storage_format(format)?;
-                            let separator = match layout_binding {
-                                Some(_) => ",",
-                                None => "",
-                            };
+                            // let separator = match layout_binding {
+                            //     Some(_) => ",",
+                            //     None => "",
+                            // };
+                            let seperator = ",";
                             write!(self.out, "{separator}{format_str}")?;
                         }
                         write!(self.out, ") ")?;
