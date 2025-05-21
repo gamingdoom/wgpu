@@ -972,6 +972,12 @@ impl<'a, W: Write> Writer<'a, W> {
                 TypeInner::Sampler { .. } => continue,
                 // All other globals are written by `write_global`
                 _ => {
+                    if let TypeInner::BindingArray { base, .. } = self.module.types[global.ty].inner {
+                        if let TypeInner::Sampler { .. } = self.module.types[base].inner {
+                            continue;
+                        }
+                    }
+                    
                     self.write_global(handle, global)?;
                     // Add a newline (only for readability)
                     writeln!(self.out)?;
