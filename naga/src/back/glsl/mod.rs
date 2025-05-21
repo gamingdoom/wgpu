@@ -4368,10 +4368,6 @@ impl<'a, W: Write> Writer<'a, W> {
                 self.write_expr(query, ctx)?;
                 write!(self.out, ", {}),", committed)?;
 
-                write!(self.out, "rayQueryGetIntersectionTypeEXT(")?;
-                self.write_expr(query, ctx)?;
-                write!(self.out, ", {}),", committed)?;
-
                 write!(self.out, "rayQueryGetIntersectionTEXT(")?;
                 self.write_expr(query, ctx)?;
                 write!(self.out, ", {}),", committed)?;
