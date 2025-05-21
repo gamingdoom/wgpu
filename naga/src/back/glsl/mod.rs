@@ -1312,12 +1312,14 @@ impl<'a, W: Write> Writer<'a, W> {
                     | TypeInner::RayQuery { .. }  => {
                         self.write_simple_global(handle, global)?;
                     },
-                    TypeInner::BindingArray { .. } => {
-                        self.write_simple_global(handle, global)?;
-                        
-                        let global_name = self.get_global_name(handle, global);
+                    TypeInner::BindingArray { base, .. } => {
+                        if !self.module.types[base].inner == TypeInner::Sampler {
+                            self.write_simple_global(handle, global)?;  
+                            
+                            let global_name = self.get_global_name(handle, global);
     
-                        self.reflection_names_globals.insert(handle, global_name);
+                            self.reflection_names_globals.insert(handle, global_name);
+                        }
                     }
                     _ => unreachable!(),
                 }
