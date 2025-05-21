@@ -4376,6 +4376,10 @@ impl<'a, W: Write> Writer<'a, W> {
                 self.write_expr(query, ctx)?;
                 write!(self.out, ", {}),", committed)?;
                 
+                write!(self.out, "rayQueryGetIntersectionInstanceIdEXT(")?;
+                self.write_expr(query, ctx)?;
+                write!(self.out, ", {}),", committed)?;
+
                 write!(self.out, "rayQueryGetIntersectionInstanceShaderBindingTableRecordOffsetEXT(")?;
                 self.write_expr(query, ctx)?;
                 write!(self.out, ", {}),", committed)?;
