@@ -1227,7 +1227,15 @@ impl<'a, W: Write> Writer<'a, W> {
                 }
 
                 Some("std430")
-            }
+            },
+            crate::AddressSpace::Handle {} => {
+                match self.module.types[global.ty].inner {
+                    TypeInner::BindingArray { .. }
+                    | TypeInner::AccelerationStructure { .. } => {
+                        Some("std140")
+                    }
+                }
+            },
             _ => None,
         };
 
