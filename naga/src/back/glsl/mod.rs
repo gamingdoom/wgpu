@@ -1233,7 +1233,8 @@ impl<'a, W: Write> Writer<'a, W> {
                     TypeInner::BindingArray { .. }
                     | TypeInner::AccelerationStructure { .. } => {
                         Some("std140")
-                    }
+                    },
+                    _ => None
                 }
             },
             _ => None,
