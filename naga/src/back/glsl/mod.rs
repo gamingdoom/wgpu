@@ -4363,16 +4363,16 @@ impl<'a, W: Write> Writer<'a, W> {
             
             Expression::RayQueryGetIntersection { query, committed } => {
                 write!(self.out, "RayIntersection(")?;
-                write!(self.out, "rayQueryGetIntersectionTypeEXT({}, {}),", Baked(query), committed)?;
-                write!(self.out, "rayQueryGetIntersectionTEXT({}, {}),", Baked(query), committed)?;
-                write!(self.out, "rayQueryGetIntersectionInstanceCustomIndexEXT({}, {}),", Baked(query), committed)?;
-                write!(self.out, "rayQueryGetIntersectionInstanceShaderBindingTableRecordOffsetEXT({}, {}),", Baked(query), committed)?;
-                write!(self.out, "rayQueryGetIntersectionGeometryIndexEXT({}, {}),", Baked(query), committed)?;
-                write!(self.out, "rayQueryGetIntersectionPrimitiveIndexEXT({}, {}),", Baked(query), committed)?;
-                write!(self.out, "rayQueryGetIntersectionBarycentricsEXT({}, {}),", Baked(query), committed)?;
-                write!(self.out, "rayQueryGetIntersectionFrontFaceEXT({}, {}),", Baked(query), committed)?;
-                write!(self.out, "rayQueryGetIntersectionObjectToWorldEXT({}, {}),", Baked(query), committed)?;
-                write!(self.out, "rayQueryGetIntersectionWorldToObjectEXT({}, {})", Baked(query), committed)?;
+                write!(self.out, "rayQueryGetIntersectionTypeEXT({}, {}),", self.names[&ctx.name_key(query)], committed)?;
+                write!(self.out, "rayQueryGetIntersectionTEXT({}, {}),", self.names[&ctx.name_key(query)], committed)?;
+                write!(self.out, "rayQueryGetIntersectionInstanceCustomIndexEXT({}, {}),", self.names[&ctx.name_key(query)], committed)?;
+                write!(self.out, "rayQueryGetIntersectionInstanceShaderBindingTableRecordOffsetEXT({}, {}),", self.names[&ctx.name_key(query)], committed)?;
+                write!(self.out, "rayQueryGetIntersectionGeometryIndexEXT({}, {}),", self.names[&ctx.name_key(query)], committed)?;
+                write!(self.out, "rayQueryGetIntersectionPrimitiveIndexEXT({}, {}),", self.names[&ctx.name_key(query)], committed)?;
+                write!(self.out, "rayQueryGetIntersectionBarycentricsEXT({}, {}),", self.names[&ctx.name_key(query)], committed)?;
+                write!(self.out, "rayQueryGetIntersectionFrontFaceEXT({}, {}),", self.names[&ctx.name_key(query)], committed)?;
+                write!(self.out, "rayQueryGetIntersectionObjectToWorldEXT({}, {}),", self.names[&ctx.name_key(query)], committed)?;
+                write!(self.out, "rayQueryGetIntersectionWorldToObjectEXT({}, {})", self.names[&ctx.name_key(query)], committed)?;
                 write!(self.out, ")")?;
             }
 
