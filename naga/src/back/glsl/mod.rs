@@ -2693,8 +2693,6 @@ impl<'a, W: Write> Writer<'a, W> {
 
                         write!(self.out, "rayQueryProceedEXT(")?;
                         self.write_expr(query, ctx)?;
-                        write!(self.out, ", ")?;
-                        self.write_expr(result, ctx)?;
                         write!(self.out, ");")?
                     },
                     crate::RayQueryFunction::GenerateIntersection { hit_t } => {
@@ -4364,7 +4362,18 @@ impl<'a, W: Write> Writer<'a, W> {
             }
             
             Expression::RayQueryGetIntersection { query, committed } => {
-                write!(self.out, "rayQueryGetIntersectionEXT({}, {})", Baked(query), committed as u8)?;
+                write!(self.out, "RayIntersection(")?;
+                write!(self.out, "rayQueryGetIntersectionTypeEXT({}, {}),", Baked(query), committed as u8)?;
+                write!(self.out, "rayQueryGetIntersectionTEXT({}, {}),", Baked(query), committed as u8)?;
+                write!(self.out, "rayQueryGetIntersectionInstanceCustomIndexEXT({}, {}),", Baked(query), committed as u8)?;
+                write!(self.out, "rayQueryGetIntersectionInstanceShaderBindingTableRecordOffsetEXT({}, {}),", Baked(query), committed as u8)?;
+                write!(self.out, "rayQueryGetIntersectionGeometryIndexEXT({}, {}),", Baked(query), committed as u8)?;
+                write!(self.out, "rayQueryGetIntersectionPrimitiveIndexEXT({}, {}),", Baked(query), committed as u8)?;
+                write!(self.out, "rayQueryGetIntersectionBarycentricsEXT({}, {}),", Baked(query), committed as u8)?;
+                write!(self.out, "rayQueryGetIntersectionFrontFaceEXT({}, {}),", Baked(query), committed as u8)?;
+                write!(self.out, "rayQueryGetIntersectionObjectToWorldEXT({}, {}),", Baked(query), committed as u8)?;
+                write!(self.out, "rayQueryGetIntersectionWorldToObjectEXT({}, {})", Baked(query), committed as u8)?;
+                write!(self.out, ")")?;
             }
 
             // not supported yet
