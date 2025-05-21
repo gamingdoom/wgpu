@@ -1305,8 +1305,8 @@ impl<'a, W: Write> Writer<'a, W> {
             // Textures and samplers are handled directly in `Writer::write`.
             crate::AddressSpace::Handle => {
                 match self.module.types[global.ty].inner {
-                    TypeInner::AccelerationStructure { ... }
-                    | TypeInner::RayQuery { ... } => {
+                    TypeInner::AccelerationStructure { .. }
+                    | TypeInner::RayQuery { .. } => {
                         self.write_simple_global(handle, global)?;
                     }
                     _ => unreachable!(),
