@@ -1217,7 +1217,7 @@ impl<'a, W: Write> Writer<'a, W> {
                     ));
                 }
 
-                Some("std140")
+                Some("std140".to_string())
             }
             crate::AddressSpace::Storage { .. } => {
                 if !self.options.version.supports_std430_layout() {
@@ -1226,7 +1226,7 @@ impl<'a, W: Write> Writer<'a, W> {
                     ));
                 }
 
-                Some("std430")
+                Some("std430".to_string())
             },
             crate::AddressSpace::Handle {} => {
                 match self.module.types[global.ty].inner {
