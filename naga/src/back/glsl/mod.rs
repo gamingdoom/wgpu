@@ -1139,7 +1139,7 @@ impl<'a, W: Write> Writer<'a, W> {
             TypeInner::Array { base, .. } => self.write_type(base),
             TypeInner::BindingArray { base, size } => self.write_type(base),
             TypeInner::Image { dim, arrayed, class } => self.write_image_type(dim, arrayed, class),
-            TypeInner::Sampler { .. } => {},
+            TypeInner::Sampler { .. } => Ok(()),
             ref other => self.write_value_type(other),
         }
     }
