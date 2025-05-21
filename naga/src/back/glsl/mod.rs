@@ -1306,8 +1306,8 @@ impl<'a, W: Write> Writer<'a, W> {
             crate::AddressSpace::Handle => {
                 match self.module.types[global.ty].inner {
                     TypeInner::AccelerationStructure { ... }
-                    | TypeInner::RayQuery { ... } {
-                        self.write_simple_global(handle, global)?
+                    | TypeInner::RayQuery { ... } => {
+                        self.write_simple_global(handle, global)?;
                     }
                     _ => unreachable!(),
                 }
