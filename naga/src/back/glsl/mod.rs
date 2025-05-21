@@ -1209,38 +1209,24 @@ impl<'a, W: Write> Writer<'a, W> {
     /// Adds trailing whitespace if any layout qualifier is written
     fn write_global_layout(&mut self, global: &crate::GlobalVariable) -> BackendResult {
         // Determine which (if any) explicit memory layout to use, and whether we support it
-        // let layout = match global.space {
-        //     crate::AddressSpace::Uniform => {
-        //         if !self.options.version.supports_std140_layout() {
-        //             return Err(Error::Custom(
-        //                 "Uniform address space requires std140 layout support".to_string(),
-        //             ));
-        //         }
-
-        //         Some("std140".to_string())
-        //     }
-        //     crate::AddressSpace::Storage { .. } => {
-        //         if !self.options.version.supports_std430_layout() {
-        //             return Err(Error::Custom(
-        //                 "Storage address space requires std430 layout support".to_string(),
-        //             ));
-        //         }
-
-        //         Some("std430".to_string())
-        //     },
-        //     crate::AddressSpace::Handle {} => {
-        //         match self.module.types[global.ty].inner {
-        //             TypeInner::BindingArray { .. }
-        //             | TypeInner::AccelerationStructure { .. } => {
-        //                 Some(format!("set = {}, binding = {}", global.binding.unwrap().group, global.binding.unwrap().binding))
-        //             },
-        //             _ => None
-        //         }
-        //     },
-        //     _ => None,
-        // };
-
-        let layout = Some(format!("set = {}, binding = {}", global.binding.unwrap().group, global.binding.unwrap().binding));
+        let layout = match global.space {
+            crate::AddressSpace::Uniform => {
+                Some(format!("set = {}, binding = {}", global.binding.unwrap().group, global.binding.unwrap().binding))
+            }
+            crate::AddressSpace::Storage { .. } => {
+                Some(format!("set = {}, binding = {}", global.binding.unwrap().group, global.binding.unwrap().binding))
+            },
+            crate::AddressSpace::Handle {} => {
+                match self.module.types[global.ty].inner {
+                    TypeInner::BindingArray { .. }
+                    | TypeInner::AccelerationStructure { .. } => {
+                        Some(format!("set = {}, binding = {}", global.binding.unwrap().group, global.binding.unwrap().binding))
+                    },
+                    _ => None
+                }
+            },
+            _ => None,
+        };
 
         // If our version supports explicit layouts, we can also output the explicit binding
         // if we have it
