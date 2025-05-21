@@ -2635,10 +2635,10 @@ impl<'a, W: Write> Writer<'a, W> {
                 write!(self.out, "{level}")?;
                 self.write_image_atomic(ctx, image, coordinate, array_index, fun, value)?
             }
-            Statement::RayQuery { query, fun } => {
+            Statement::RayQuery { query, ref fun } => {
                 write!(self.out, "{level}")?;
 
-                match fun {
+                match *fun {
                     crate::RayQueryFunction::Initialize { acceleration_structure, descriptor } => {
                         write!(self.out, "rayQueryInitializeEXT(")?;
                         self.write_expr(query, ctx)?;
