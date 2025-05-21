@@ -1232,7 +1232,7 @@ impl<'a, W: Write> Writer<'a, W> {
                 match self.module.types[global.ty].inner {
                     TypeInner::BindingArray { .. }
                     | TypeInner::AccelerationStructure { .. } => {
-                        Some("std140")
+                        Some(format!("set = {}, binding = {}", global.binding.unwrap().group, global.binding.unwrap().binding))
                     },
                     _ => None
                 }
