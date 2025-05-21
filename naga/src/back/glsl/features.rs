@@ -430,7 +430,7 @@ impl<W> Writer<'_, W> {
                         | ImageClass::Depth { multi: false } => {}
                     }
                 }
-                TypeInner::AccelerationStructure { .. } {
+                TypeInner::AccelerationStructure { .. } => {
                     self.features.request(Features::RAY_QUERY);
                 }
                 _ => {}
