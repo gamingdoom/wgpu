@@ -1097,14 +1097,21 @@ impl<'a, W: Write> Writer<'a, W> {
             // Here we only write the size of the array i.e. `[size]`
             // Base `type` and `name` should be written outside
             TypeInner::Array { base, size, .. } => self.write_array_size(base, size)?,
+
+            TypeInner::AccelerationStructure { vertex_return } => {
+                write!(self.out, "accelerationStructureEXT")?;
+            }
+
+            TypeInner::RayQuery { vertex_return } => {
+                write!(self.out, "rayQueryEXT")?;
+            }
+            
             // Write all variants instead of `_` so that if new variants are added a
             // no exhaustiveness error is thrown
             TypeInner::Pointer { .. }
             | TypeInner::Struct { .. }
             | TypeInner::Image { .. }
             | TypeInner::Sampler { .. }
-            | TypeInner::AccelerationStructure { .. }
-            | TypeInner::RayQuery { .. }
             | TypeInner::BindingArray { .. } => {
                 return Err(Error::Custom(format!("Unable to write type {inner:?}")))
             }
