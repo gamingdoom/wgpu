@@ -1309,9 +1309,15 @@ impl<'a, W: Write> Writer<'a, W> {
             crate::AddressSpace::Handle => {
                 match self.module.types[global.ty].inner {
                     TypeInner::AccelerationStructure { .. }
-                    | TypeInner::RayQuery { .. } 
-                    | TypeInner::BindingArray { .. } => {
+                    | TypeInner::RayQuery { .. }  => {
                         self.write_simple_global(handle, global)?;
+                    },
+                    TypeInner::BindingArray { .. } => {
+                        self.write_simple_global(handle, global)?;
+                        
+                        let global_name = self.get_global_name(handle, global);
+    
+                        self.reflection_names_globals.insert(handle, global_name);
                     }
                     _ => unreachable!(),
                 }
