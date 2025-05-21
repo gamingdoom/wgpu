@@ -55,6 +55,8 @@ bitflags::bitflags! {
         const SUBGROUP_OPERATIONS = 1 << 24;
         /// Image atomics
         const TEXTURE_ATOMICS = 1 << 25;
+        // Ray Query
+        const RAY_QUERY = 1 << 26;
     }
 }
 
@@ -135,6 +137,7 @@ impl FeaturesManager {
         check_feature!(TEXTURE_LEVELS, 130);
         check_feature!(IMAGE_SIZE, 430, 310);
         check_feature!(TEXTURE_SHADOW_LOD, 200, 300);
+        check_feature!(RAY_QUERY, 450);
 
         // Return an error if there are missing features
         if missing.is_empty() {
@@ -285,6 +288,12 @@ impl FeaturesManager {
         if self.0.contains(Features::TEXTURE_ATOMICS) {
             // https://www.khronos.org/registry/OpenGL/extensions/OES/OES_shader_image_atomic.txt
             writeln!(out, "#extension GL_OES_shader_image_atomic : require")?;
+        }
+
+        if self.0.contains(Features::RAY_QUERY) {
+            // https://github.com/KhronosGroup/GLSL/blob/main/extensions/ext/GLSL_EXT_ray_query.txt
+            writeln!(out, "#extension GL_EXT_ray_tracing : require")?;
+            writeln!(out, "#extension GL_EXT_ray_query : require")?;
         }
 
         Ok(())
@@ -550,6 +559,9 @@ impl<W> Writer<'_, W> {
                 Expression::SubgroupBallotResult |
                 Expression::SubgroupOperationResult { .. } => {
                     features.request(Features::SUBGROUP_OPERATIONS)
+                }
+                Expression::RayQueryGetIntersection { .. } => {
+                    features.request(Features::RAY_QUERY)
                 }
                 _ => {}
             }
