@@ -1313,7 +1313,7 @@ impl<'a, W: Write> Writer<'a, W> {
                         self.write_simple_global(handle, global)?;
                     },
                     TypeInner::BindingArray { base, .. } => {
-                        if !self.module.types[base].inner == TypeInner::Sampler {
+                        if let TypeInner::Image { .. } = self.module.types[base].inner {
                             self.write_simple_global(handle, global)?;  
                             
                             let global_name = self.get_global_name(handle, global);
